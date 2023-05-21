@@ -50,20 +50,9 @@ fn add_budget_portions() -> HashMap<String, Decimal> {
     add_portions("budget portion", "budget percentage")
 }
 
-fn calculate_income_by_budget(income: Vec<Decimal>, budget_portions: HashMap<String, Decimal>) {
-    for (budget_portion_name, budget_portion_value) in &budget_portions {
-        for my_income in &income {
-            let calculation = my_income * budget_portion_value / dec!(100.0);
-
-            println!("{}: {}", budget_portion_name.as_str(), calculation);
-        }
-    }
-}
-
-// enter paychecks here
 fn income() -> Vec<Decimal> {
     let income = vec![
-        Decimal::from_str("1000.56").unwrap(),
+        Decimal::from_str("999.99").unwrap(),
     ];
     income
 }
@@ -73,11 +62,10 @@ struct Expenses {
     price: Decimal,
 }
 
-// keep track of your expenses here
 fn expenses() -> Vec<Expenses> {
     let expenses = vec![
-        Expenses { name: "bill".to_string(),
-            price: dec!(100)},
+        Expenses { name: "bills ugh".to_string(),
+            price: dec!(30.0)},
     ];
     expenses
 }
@@ -112,15 +100,6 @@ fn calculate_total_income_with_expenses(expenses: Vec<Expenses>) -> Decimal {
     calculation
 }
 
-// calculates total income with expenses and by a budget system
-fn calculate_overall_income_by_budget() {
-    let calculation = calculate_total_income_with_expenses(expenses());
-    let income = vec![calculation];
-    let budget_system = add_budget_portions();
-
-    calculate_income_by_budget(income, budget_system);
-}
-
 // a function that calculates the total amount of money for each budget portion
 fn calculate_each_budget_portion_money() -> HashMap<String, Decimal> {
     println!("Please enter your total income: ");
@@ -153,7 +132,6 @@ fn view_income_in_each_budget_portion() {
     }
 }
 
-#[derive(Debug)]
 struct Item {
     item_name: String,
     item_cost: Decimal,
@@ -238,7 +216,6 @@ fn calculate_item_by_budget() {
 }
 
 enum Choices {
-    ViewOverallIncomeByBudget,
     ViewTotalExpenses,
     ViewTotalIncome,
     ViewEachBudgetPortionIncome,
@@ -247,11 +224,10 @@ enum Choices {
 
 fn prompt_user() -> Result<Choices, String> {
     let intro = format!("Welcome to the income and budget app! Please type in the associated number for the task you wish to perform!
-              1) View overall income by budget
-              2) View total expenses
-              3) View total income
-              4) View total amount of money for each budget portion
-              5) View items by a budget system
+              1) View total expenses
+              2) View total income
+              3) View total amount of income for each budget portion
+              4) View items by a budget system
               ");
     println!("{}", intro);
 
@@ -266,11 +242,10 @@ fn prompt_user() -> Result<Choices, String> {
     let choice: Result<Choices, String>;
 
     match choice_buffer {
-        1 => choice = Ok(Choices::ViewOverallIncomeByBudget),
-        2 => choice = Ok(Choices::ViewTotalExpenses),
-        3 => choice = Ok(Choices::ViewTotalIncome),
-        4 => choice = Ok(Choices::ViewEachBudgetPortionIncome),
-        5 => choice = Ok(Choices::ViewItemsByBudgetSystem),
+        1 => choice = Ok(Choices::ViewTotalExpenses),
+        2 => choice = Ok(Choices::ViewTotalIncome),
+        3 => choice = Ok(Choices::ViewEachBudgetPortionIncome),
+        4 => choice = Ok(Choices::ViewItemsByBudgetSystem),
         _ => choice = Err(String::from("Invalid Choice!")),
     }
 
@@ -280,7 +255,6 @@ fn prompt_user() -> Result<Choices, String> {
 pub fn run() {
     let choice = prompt_user();
     match choice {
-        Ok(Choices::ViewOverallIncomeByBudget) => calculate_overall_income_by_budget(),
         Ok(Choices::ViewTotalIncome) => println!("Total Income: {}", calculate_total_income_with_expenses(expenses())),
         Ok(Choices::ViewTotalExpenses) => calculate_total_expenses(expenses()),
         Ok(Choices::ViewEachBudgetPortionIncome) => view_income_in_each_budget_portion(),
